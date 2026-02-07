@@ -110,7 +110,6 @@ impl LLM for OpenAIClient {
                 anyhow::anyhow!("No choices in OpenAI response")
             })
     }
-
 }
 
 #[cfg(test)]

@@ -1,0 +1,13 @@
+{
+  "servers": [
+    {
+      "name": "google",
+      "command": "target/debug/google_mcp",
+      "args": [],
+      "env": {
+        "GOOGLE_API_KEY": "your_api_key",
+        "GOOGLE_CX": "your_cse_id"
+      }
+    }
+  ]
+}

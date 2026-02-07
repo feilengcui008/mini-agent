@@ -1,6 +1,7 @@
 mod cli;
 mod context;
 mod llm;
+mod mcp;
 mod session;
 mod subagent;
 mod tool;
@@ -49,6 +50,14 @@ struct Args {
     // Log file path
     #[arg(long, default_value = "mini-agent.log")]
     log_file: String,
+
+    // MCP config file path
+    #[arg(long, default_value = "src/mcp/mcp.json")]
+    mcp_config: String,
+
+    // Disable MCP tools
+    #[arg(long, default_value_t = false)]
+    disable_mcp: bool,
 
     // Context max tokens
     #[arg(long, default_value_t = 8192)]
@@ -127,6 +136,11 @@ async fn main() -> anyhow::Result<()> {
     tool_registry.register(Arc::new(BashTool));
     tool_registry.register(Arc::new(SubAgentTool));
     // Register other tools or MCP tools here
+    if !args.disable_mcp
+        && let Err(e) = mcp::register_mcp_tools(&mut tool_registry, &args.mcp_config).await
+    {
+        log::error!("MCP tool registration failed: {}", e);
+    }
 
     let mut ui = Cli::new(context, session_manager, tool_registry, llm, args.max_loops);
 

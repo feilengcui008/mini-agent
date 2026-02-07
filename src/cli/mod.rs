@@ -7,7 +7,7 @@ use anyhow::Result;
 use colored::Colorize;
 use log::{debug, error, info};
 use regex::Regex;
-use rustyline::DefaultEditor;
+use rustyline::{Cmd, DefaultEditor, EventHandler, KeyEvent};
 use rustyline::error::ReadlineError;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -65,6 +65,7 @@ impl Cli {
             }
         });
         let mut rl = DefaultEditor::new()?;
+        rl.bind_sequence(KeyEvent::ctrl('D'), EventHandler::Simple(Cmd::EndOfFile));
         // Optionally load history if file exists
         if rl.load_history(DEFAULT_CMD_HISTORY_FILE_NAME).is_err() {
             // No history file yet
@@ -139,7 +140,7 @@ impl Cli {
                             }
                             Some("/tools") => {
                                 for tool in self.tool_registry.list() {
-                                    println!("- {}:{}", tool.name(), tool.description());
+                                    println!("- {}: {}", tool.name(), tool.description());
                                 }
                             }
                             _ => println!("Unknown command.Type /help"),

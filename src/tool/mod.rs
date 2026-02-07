@@ -46,9 +46,7 @@ impl ToolRegistry {
     }
 
     pub fn generate_tool_instructions(&self) -> String {
-        let mut prompt = String::from(
-            "You have access to the following tools:\n\n",
-        );
+        let mut prompt = String::from("You have access to the following tools:\n\n");
         for tool in self.list() {
             prompt.push_str(&format!("## {}: {}\n", tool.name(), tool.description()));
             prompt.push_str(&format!("Schema: {}\n\n", tool.schema()));
